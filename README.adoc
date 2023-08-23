@@ -1,0 +1,31 @@
+= systemverilog-dev-env : A container image with tools to develop in systemverilog
+:doctype: book
+:toc:
+:author: obliguedon
+:revdate: 2023-08-23
+:revnumber: v0.1
+:xrefstyle: full
+
+:!sectnums:
+
+== Build the image
+
+[source, shell]
+----
+podman build -t systemverilog-dev-env:beta
+----
+
+== Use the image
+
+install the extention https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers:[Dev Container] on VS Code.
+
+create a container with the command below :
+
+[source, shell]
+----
+podman run -ti -v <your/prj/dir>:/workspace:rw systemverilog-dev-env:beta
+----
+
+When started in VS Code, press `ctrl+shift+P`, type `> Dev Container: Attach to Running Container...` and select the container that you just launched.
+
+Ready to lint with slang, simulate with verilator or iverilog and write testbench with cocotb.
