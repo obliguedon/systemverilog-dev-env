@@ -132,7 +132,8 @@ RUN cd /tmp/ \
 
 # VERIDIAN
 # install toolchain for veridian
-RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y \
+RUN apt install -y curl \
+    && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y \
     && apt install -y pkg-config \
     && apt install -y libssl-dev \
     && apt install -y libclang-dev
