@@ -1,9 +1,9 @@
 # DESCRIPTION: install essential utils to develop in systemverilog
-FROM docker.io/ubuntu:22.04
+FROM lscr.io/linuxserver/code-server:4.20.0
 
-ARG verilator_version=v5.012
+ARG verilator_version=v5.020
 ARG iverilog_version=v12_0
-ARG slang_version=v3.0
+ARG slang_version=v5.0
 
 # set timezone of the image
 ENV TZ="Europe/Paris"
@@ -30,9 +30,9 @@ RUN apt update \
     && apt install -y python3-pip \
     && apt install -y sysvbanner \
     && pip3 install --no-cache-dir cocotb[bus] \
-    && pip3 install --no-cache-dir pytest
-
-RUN cd /tmp/
+    && pip3 install --no-cache-dir pytest \
+    && pip3 install --no-cache-dir pyparsing \
+    && pip3 install --no-cache-dir pandas
 
 
 #   @@@@   @  @    @  @    @  @         @@    @@@@@   @@@@   @@@@@
@@ -43,7 +43,8 @@ RUN cd /tmp/
 #   @@@@   @  @    @   @@@@   @@@@@@  @    @    @     @@@@   @    @
 
 # build and install slang
-RUN apt install -y cmake \
+RUN cd /tmp/ \
+    && apt install -y cmake \
     && git clone https://github.com/MikePopoloski/slang.git \
     && cd ./slang/ \
     && git checkout ${slang_version} \
@@ -58,7 +59,8 @@ RUN apt install -y cmake \
 
 # build and install verilator
 # already installed: perl, libfl2, libfl-dev, zlib1g, zlib1g-dev
-RUN apt install -y help2man \
+RUN cd /tmp/ \
+    && apt install -y help2man \
     && apt install -y perl-doc \
     && apt install -y autoconf \
     && apt install -y flex \
@@ -77,7 +79,8 @@ RUN apt install -y help2man \
     && rm -r ./verilator
 
 # build and install iverilog
-RUN apt install -y gperf \
+RUN cd /tmp/ \
+    && apt install -y gperf \
     && git clone https://github.com/steveicarus/iverilog.git \
     && cd ./iverilog \
     && git checkout ${iverilog_version} \
@@ -87,6 +90,17 @@ RUN apt install -y gperf \
     && make install \
     && cd .. \
     && rm -r ./iverilog
+
+# download and install GHDL
+RUN apt install -y wget \
+    && cd /tmp \
+    && wget https://github.com/ghdl/ghdl/releases/download/v3.0.0/ghdl-gha-ubuntu-22.04-llvm.tgz \
+    && tar -zxf ghdl-gha-ubuntu-22.04-llvm.tgz \
+    && mv /tmp/bin/* /usr/bin/ \
+    && mv /tmp/include/* /usr/include/ \
+    && mv /tmp/lib/* /usr/lib/ \
+    && rm -r /tmp/* \
+    && apt install -y libgnat-10
 
 
 #  @@@@@@   @@@@   @@@@@   @    @    @@    @@@@@  @@@@@@  @@@@@
@@ -123,17 +137,16 @@ RUN pip3 install --no-cache-dir hdl-checker
 
 # download and install verible
 RUN cd /tmp/ \
-    && wget https://github.com/chipsalliance/verible/releases/download/v0.0-3296-g0bcc1e5d/verible-v0.0-3296-g0bcc1e5d-linux-static-x86_64.tar.gz \
-    && tar zxf verible-v0.0-3296-g0bcc1e5d-linux-static-x86_64.tar.gz \
-    && cp -a ./verible-v0.0-3296-g0bcc1e5d/bin/. /usr/bin/ \
-    && cp -a ./verible-v0.0-3296-g0bcc1e5d/share/. /usr/share/ \
-    && rm -r ./verible-v0.0-3296-g0bcc1e5d \
-    && rm ./verible-v0.0-3296-g0bcc1e5d-linux-static-x86_64.tar.gz
+    && wget https://github.com/chipsalliance/verible/releases/download/v0.0-3483-ga4d61b11/verible-v0.0-3483-ga4d61b11-linux-static-x86_64.tar.gz \
+    && tar zxf verible-v0.0-3483-ga4d61b11-linux-static-x86_64.tar.gz \
+    && cp -a ./verible-v0.0-3483-ga4d61b11/bin/ /usr/bin/ \
+    && rm -r ./verible-v0.0-3483-ga4d61b11 \
+    && rm ./verible-v0.0-3483-ga4d61b11-linux-static-x86_64.tar.gz
 
 # VERIDIAN
 # install toolchain for veridian
-RUN apt install -y curl \
-    && curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y \
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y \
+    && apt update \
     && apt install -y pkg-config \
     && apt install -y libssl-dev \
     && apt install -y libclang-dev
@@ -142,22 +155,26 @@ ENV PATH="/config/.cargo/bin:${PATH}"
 RUN cargo install --root /usr/ --git https://github.com/vivekmalneedi/veridian.git --all-features
 
 # download and install svls
-RUN apt install -y unzip \
-    && wget https://github.com/dalance/svls/releases/download/v0.2.9/svls-v0.2.9-x86_64-lnx.zip \
-    && unzip ./svls-v0.2.9-x86_64-lnx.zip \
-    && mv ./svls /usr/bin/ \
-    && rm ./svls-v0.2.9-x86_64-lnx.zip \
+RUN cd /tmp/ \
+    && apt install -y unzip \
+    && wget https://github.com/dalance/svls/releases/download/v0.2.11/svls-v0.2.11-x86_64-lnx.zip \
+    && unzip /tmp/svls-v0.2.11-x86_64-lnx.zip \
+    && mv /tmp/svls /usr/bin/ \
+    && rm /tmp/svls-v0.2.11-x86_64-lnx.zip \
     && mkdir /usr/share/svlint/
 COPY ./.svlint.toml /usr/share/svlint/
 ENV SVLINT_CONFIG="/usr/share/svlint/.svlint.toml"
+
 # download and install svlint
-RUN wget https://github.com/dalance/svlint/releases/download/v0.8.0/svlint-v0.8.0-x86_64-lnx.zip \
-    && unzip ./svlint-v0.8.0-x86_64-lnx.zip \
-    && mv ./svlint /usr/bin \
-    && rm /svlint-v0.8.0-x86_64-lnx.zip
+RUN cd /tmp/ \
+    && wget https://github.com/dalance/svlint/releases/download/v0.9.2/svlint-v0.9.2-x86_64-lnx.zip \
+    && unzip /tmp/svlint-v0.9.2-x86_64-lnx.zip \
+    && mv /tmp/bin/svlint /usr/bin \
+    && rm /tmp/svlint-v0.9.2-x86_64-lnx.zip
 
 # download and install universal ctags
-RUN git clone https://github.com/universal-ctags/ctags.git \
+RUN cd /tmp/ \
+    && git clone https://github.com/universal-ctags/ctags.git \
     && cd ./ctags \
     && ./autogen.sh \
     && ./configure \
@@ -180,10 +197,30 @@ RUN git clone https://github.com/universal-ctags/ctags.git \
 # TODO: install asciidoctor convertion kit
 
 # remove cache 
-RUN apt clean
-RUN rm -rf /var/lib/apt/lists/
+RUN apt clean \
+    && rm -rf /var/lib/apt/lists/
 
 # add color to the terminal output
 ENV TERM xterm-256color
+
+# Install vs code extensions
+RUN /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension ms-python.python \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension ms-python.vscode-pylance \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension asciidoctor.asciidoctor-vscode \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension jkillian.custom-local-formatters \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension usernamehw.errorlens \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension ms-vscode.hexeditor \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension oderwat.indent-rainbow \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension mechatroner.rainbow-csv \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension mshr-h.veriloghdl \
+    && /app/code-server/bin/code-server --extensions-dir /config/extensions --install-extension monokai.theme-monokai-pro-vscode
+
+# Set default settings
+COPY ./settings.json /config/data/Machine/
+COPY ./tasks.json /config/data/User/
+COPY ./keybindings.json /config/data/User/
+COPY ./custom.code-snippets /config/data/User/snippets/
+
+RUN mkdir /workspace
 
 WORKDIR /workspace

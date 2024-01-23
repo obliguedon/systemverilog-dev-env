@@ -1,0 +1,149 @@
+{
+    "asciidoc template": {
+        "scope": "asciidoc",
+        "prefix": "template",
+        "body": [
+            "= ${1:title}: ${2:subtitle}",
+            ":doctype: book",
+            ":toc:",
+            ":author: <first_name> <last_name>",
+            ":email: <your.email@example.com>",
+            ":revdate: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+            ":revnumber: v0.1",
+            ":revremark: ${3}",
+            ":orgname: <your_workplace>",
+            ":imagesdir: ./images",
+            ":xrefstyle: full",
+            "",
+            ":!sectnums:",
+            "[abstract]",
+            "== abstract",
+            "--",
+            "this document describe ${4}",
+            "--",
+            "",
+            "ifdef::env-pdf[]",
+            "== list of figures",
+            "list-of::image[]",
+            "",
+            "== list of tables",
+            "list-of::table[]",
+            "endif::env-pdf[]",
+            ":sectnums:",
+            "",
+            "== ${0:first section}"
+        ]
+    },
+    "ditaa module template": {
+        "scope": "asciidoc",
+        "prefix": "block diagram",
+        "body": [
+            "[ditaa]",
+            "....",
+            "                                      ${0}",
+            "     +-------+                      +-----------------+                      +------+",
+            "     |ext{io}|>--+------------clk --+>                |-> output------------>|module|",
+            "     +-------+   +-----------rstn --*                 |                      +------+",
+            "                                    |                 |",
+            "                                    +-----------------+",
+            "...."
+        ],
+        "description": "ditaa module template"
+    },
+	"comment separator":{
+        "scope": "systemverilog,verilog",
+		"prefix": "---",
+		"body": [
+			"//--------------------------------------------------------------------------------------------------"
+		],
+		"description": "a line of hyphen"
+	},
+	"module comb": {
+        "scope": "systemverilog,verilog",
+		"prefix": "module comb",
+		"body": [
+			"module $TM_FILENAME_BASE (",
+			"    ${1}",
+			");",
+			"    $0",
+			"endmodule"
+		],
+		"description": "comb module template"
+	},
+	"module comb param": {
+        "scope": "systemverilog,verilog",
+		"prefix": "module comb #(",
+		"body": [
+			"module $TM_FILENAME_BASE #(",
+			"    parameter${1| int , |}${2:NAME}${3| = , |}",
+			") (",
+			"    ${4}",
+			");",
+			"    $0",
+			"endmodule"
+		],
+		"description": "comb module template"
+	},
+	"module clk": {
+        "scope": "systemverilog,verilog",
+		"prefix": "module clk",
+		"body": [
+			"module $TM_FILENAME_BASE (",
+			"    input logic i_clk,",
+			"    input logic i_rst_n,",
+			"    ${1}",
+			");",
+			"    $0",
+			"endmodule"
+		],
+		"description": "clocked module template"
+	},
+	"module clk param": {
+        "scope": "systemverilog,verilog",
+		"prefix": "module clk #(",
+		"body": [
+			"module $TM_FILENAME_BASE #(",
+			"    parameter${1| int , |}${2:NAME}${3| = , |}",
+			") (",
+			"    input logic i_clk,",
+			"    input logic i_rst_n,",
+			"    ${4}",
+			");",
+			"    $0",
+			"endmodule"
+		],
+		"description": "clocked module template"
+	},
+	"output logic": {
+        "scope": "systemverilog,verilog",
+		"prefix": "output logic o_",
+		"body": [
+			"output logic o_${0}"
+		],
+		"description": "output port"
+	},
+	"output logic [:]": {
+        "scope": "systemverilog,verilog",
+		"prefix": "output logic [:] o_",
+		"body": [
+			"output logic [$1:$2] o_${0}"
+		],
+		"description": "output vector"
+	},
+	"input logic": {
+        "scope": "systemverilog,verilog",
+		"prefix": "input logic i_",
+		"body": [
+			"input logic i_${0}"
+		],
+		"description": "input port"
+	},
+	"input logic [:]": {
+        "scope": "systemverilog,verilog",
+		"prefix": "input logic [:] i_",
+		"body": [
+			"input logic [$1:$2] i_${0}"
+		],
+		"description": "input vector"
+	}
+}

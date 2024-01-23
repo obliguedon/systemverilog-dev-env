@@ -1,0 +1,101 @@
+{
+    "workbench.colorTheme": "Monokai Pro (Filter Spectrum)",
+    "workbench.iconTheme": "Monokai Pro (Filter Spectrum) Icons",
+    "asciidoc.preview.scrollEditorWithPreview": false,
+    "asciidoc.preview.scrollPreviewWithEditor": false,
+    "asciidoc.extensions.enableKroki": true,
+    "asciidoc.preview.asciidoctorAttributes": {"kroki-server-url": "http://localhost:8000/"},
+    "editor.bracketPairColorization.enabled": true,
+    "editor.minimap.showSlider": "always",
+    "editor.renderWhitespace": "all",
+    "editor.cursorSurroundingLines": 2,
+    "editor.guides.bracketPairs": "active",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "scm.defaultViewMode": "tree",
+    "git.autofetch": true,
+    "git.fetchOnPull": true,
+    "git.detectSubmodulesLimit": 30,
+    "editor.linkedEditing": true,
+    "indentRainbow.colors": [
+        "#fc618d20",
+        "#fd935320",
+        "#fce56620",
+        "#7bd88f20",
+        "#5ad4e620",
+        "#948ae320"
+    ],
+    "indentRainbow.excludedLanguages": [
+        "plaintext",
+        "plantuml",
+        "csv"
+    ],
+    "customLocalFormatters.formatters": [
+        {
+            "languages": ["systemverilog"],
+            "command": "python3 /usr/share/s3sv/verilog_beautifier.py --space 4 --oneDeclPerLine --input ${file}"
+        }
+    ],
+    "[systemverilog]": {
+        "editor.defaultFormatter": "jkillian.custom-local-formatters",
+        "editor.autoClosingBrackets": "always"
+    },
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "constant.other.net.systemverilog",
+                "settings": {
+                    "foreground": "#948AE3",
+                    "fontStyle": "bold"
+                }
+            },
+            {
+                "scope": "keyword.other.systemverilog",
+                "settings": {
+                    "foreground": "#FD971F"
+                }
+            },
+            {
+                "scope": "comment.block.banner.systemverilog",
+                "settings": {
+                    "foreground": "#7BD88F",
+                    "fontStyle": "bold"
+                }
+            }
+        ]
+    },
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "diffEditor.ignoreTrimWhitespace": false,
+    "[markdown]": {
+        "editor.unicodeHighlight.ambiguousCharacters": true,
+        "editor.unicodeHighlight.invisibleCharacters": true,
+        "editor.wordWrap": "off",
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
+        "editor.rulers": [20, 40, 60, 80, 100, 120],
+        "editor.useTabStops": false
+    },
+    "[asciidoc]": {
+        "editor.unicodeHighlight.ambiguousCharacters": true,
+        "editor.unicodeHighlight.invisibleCharacters": true,
+        "editor.wordWrap": "off",
+        "editor.quickSuggestions": {
+            "comments": "off",
+            "strings": "off",
+            "other": "off"
+        },
+        "editor.rulers": [20, 40, 60, 80, 100, 120],
+        "editor.useTabStops": false
+    },
+    "verilog.languageServer.name": "veridian",
+    "verilog.languageServer.enabled": true,
+    "verilog.linting.linter": "verilator",
+    "verilog.linting.verilator.arguments": "-f ./incdir.vlt",
+    "verilog.ctags.path": "ctags"
+}

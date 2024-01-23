@@ -1,0 +1,34 @@
+version: "3"
+services:
+  systemverilog-dev-env:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: systemverilog-dev-env:beta
+    container_name: code-server
+    environment:
+      - PUID=0
+      - PGID=0
+      - DEFAULT_WORKSPACE=/workspace #optional
+    ports:
+      - 8443:8443
+    volumes:
+      - /<your>/<project>/<folder>:/workspace/:rw
+    # stdin_open: true # docker run -i
+    # tty: true # docker run -t
+
+  # Use GTKWave on WSL2
+  # vcdrom:
+  #   build:
+  #     context: ./vcdrom
+  #     dockerfile: Dockerfile
+  #   image: vcdrom:beta
+  #   container_name: vcdrom
+  #   ports:
+  #     - 9000:9000
+      
+
+  kroki:
+    image: docker.io/yuzutech/kroki
+    ports:
+      - "8000:8000"

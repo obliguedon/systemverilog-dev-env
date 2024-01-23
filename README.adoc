@@ -2,30 +2,54 @@
 :doctype: book
 :toc:
 :author: obliguedon
-:revdate: 2023-08-23
+:revdate: 2024-01-23
 :revnumber: v0.1
 :xrefstyle: full
 
 :!sectnums:
 
+== Content of the image
+
+this image has all the necessary tools to develop and run simulations in SystemVerilog or VHDL.
+
+* Simulators :
+** link:https://github.com/verilator/verilator:[Verilator]
+** link:https://github.com/steveicarus/iverilog:[iverilog]
+** link:https://github.com/ghdl/ghdl:[GHDL]
+* Linter :
+** link:https://github.com/MikePopoloski/slang:[Slang]
+** link:https://github.com/dalance/svlint:[SVLint]
+* Language server :
+** link:https://github.com/vivekmalneedi/veridian:[Veridian]
+** link:https://github.com/dalance/svls:[SVLS]
+** link:https://github.com/suoto/hdl_checker:[HDL Checker]
+** link:https://github.com/chipsalliance/verible:[Verible]
+* Formater :
+** link:https://github.com/TheClams/SystemVerilog/tree/master/verilogutil:[The Clams SystemVerilog]
+
+//--
+NOTE:: See the link:./Dockerfile:[Dockerfile] for more information
+
 == Build the image
+
+NOTE:: update the JSON files to customize your environment
 
 [source, shell]
 ----
-podman build -t systemverilog-dev-env:beta
+podman-compose -f ./compose.yml build
 ----
 
 == Use the image
 
-install the extention https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers:[Dev Container] on VS Code.
+IMPORTANT:: update the link:./compose.yml[compose file] to open your workspace in the container
 
-create a container with the command below :
+start the env with the command below :
 
 [source, shell]
 ----
-podman run -ti -v <your/prj/dir>:/workspace:rw systemverilog-dev-env:beta
+podman-compose -f ./compose.yml up
 ----
 
-When started in VS Code, press `ctrl+shift+P`, type `> Dev Container: Attach to Running Container...` and select the container that you just launched.
+When started, open a web browser and go to link:http://localhost:8443/[]
 
 Ready to lint with slang, simulate with verilator or iverilog and write testbench with cocotb.
